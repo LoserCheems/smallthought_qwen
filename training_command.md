@@ -1,0 +1,1 @@
+python sft.py --config ./config_full.yaml
