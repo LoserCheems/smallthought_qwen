@@ -79,9 +79,12 @@ def main(script_args, training_args, model_args):
     # Load datasets
     ###############
     if re.match(r'^[^/]+/[^/]+$', script_args.dataset_name):
-        dataset = load_dataset(script_args.dataset_name, name=script_args.dataset_config)
+        dataset = load_dataset(script_args.dataset_name, name=script_args.dataset_config, split="train")
     else:
         dataset = load_from_disk(script_args.dataset_name)
+    if "test" not in dataset:
+        dataset = dataset.train_test_split(test_size=1000)
+    dataset["train"] = dataset["train"].take(25_000)
     
     def preprocess_function(examples):
         messages = examples["messages"]
@@ -175,20 +178,6 @@ def main(script_args, training_args, model_args):
         trainer.log_metrics("eval", metrics)
         trainer.save_metrics("eval", metrics)
         logger.info("*** Evaluation complete ***")
-
-    # ################################
-    # # Register the model and save
-    # ################################
-    # AutoConfig.register("doge", DogeConfig)
-    # AutoModel.register(DogeConfig, DogeModel)
-    # AutoModelForCausalLM.register(DogeConfig, DogeForCausalLM)
-    # DogeConfig.register_for_auto_class()
-    # DogeModel.register_for_auto_class("AutoModel")
-    # DogeForCausalLM.register_for_auto_class("AutoModelForCausalLM")
-    # tokenizer = AutoTokenizer.from_pretrained(f"{training_args.output_dir}")
-    # tokenizer.save_pretrained(f"{training_args.output_dir}")
-    # model = AutoModelForCausalLM.from_pretrained(f"{training_args.output_dir}")
-    # model.save_pretrained(f"{training_args.output_dir}")
 
     #############
     # push to hub

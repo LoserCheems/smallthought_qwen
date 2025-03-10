@@ -7,16 +7,11 @@ report_to:
 - wandb
 save_strategy: steps
 save_steps: 100
-output_dir: /root/autodl-tmp/data/Qwen-0.5B-Instruct
+output_dir: data/Qwen-0.5B
 overwrite_output_dir: true
-# push_to_hub: true
-# private: true
-# # token: <your-token>
-# hub_model_id: Doge-160M-Distill
-# hub_strategy: every_save
 
 # Model arguments
-model_name_or_path: Qwen/Qwen2.5-0.5B-Instruct
+model_name_or_path: Qwen/Qwen2.5-0.5B
 model_revision: main
 trust_remote_code: True
 torch_dtype: bfloat16
@@ -34,7 +29,7 @@ preprocessing_num_workers: 1 # Equal to the number of Gpus you are using
 seed: 233
 do_train: true
 num_train_epochs: 2
-per_device_train_batch_size: 2
+per_device_train_batch_size: 1
 do_eval: true
 eval_strategy: steps
 eval_steps: 10
@@ -46,7 +41,7 @@ lr_scheduler_kwargs:
   min_lr_rate: 0.1
 warmup_ratio: 0.1
 weight_decay: 0.01
-gradient_accumulation_steps: 64
+gradient_accumulation_steps: 128
 gradient_checkpointing: false
 gradient_checkpointing_kwargs:
   use_reentrant: false
